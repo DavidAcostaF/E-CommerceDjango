@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{%csrf_token%}
+{%block body%}
+<div class="row row-cols-auto" id="productos_columna">
+        {%for carrito in context%}
+                <section class="col m-2 carrito">
+                        <img class="img-fluid rounded mx-auto" style="width:200px; height:200px;" src="{{carrito.producto.imagen.url}}">
+                        <br>
+                        <label class="form-label">PRODUCTO<span style="width:200px; min-height:60px" class="form-control producto">{{carrito.producto}}</span></label>
+                        <br>
+                        <label class="form-label">DESCRIPCION<span class="form-control" style="width:200px; min-height:200px; min-lenght:300px">{{carrito.producto.descripcion}}</span></label>
+                        <br>
+                        <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control" id="{{carrito.producto.id}}">{{carrito.producto.costo}}</span></label>
+                        <br>
+                        <label class="form-label">Cantidad<span class="form-control  cantidad">{{carrito.cantidad}}</span></label>
+                </section>
+        {%endfor %}
+</div>
+{%endblock body%}
+{%block comprar%}
+    <li class="menu-item-has-children dropdown">
+    	<a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="/comprar_productos/" onclick="confirmacionCompra()"><i class="menu-icon fa fa-solid fa-check"></i></i>Comprar</a>
+    </li>
+{%endblock comprar%}

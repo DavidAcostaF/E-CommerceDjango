@@ -1,0 +1,25 @@
+<div class="modal-dialog modal-ig" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Edicion de productos:{{object}}</h2>
+            <button class="close" type="button" data-dismiss= "modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form id="form_edicion" action="{%url 'productos:editar_productos' object.pk %}" method="POST">
+            {%csrf_token%}
+            <div class="modal-body">
+                <div class="modal-body">
+                    <div id="erroresEdicion">
+
+                    </div>
+                </div>
+                {{form.as_p}}
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" onclick="cerrar_modal_edicion()">Cancerlar</button>
+                <button id="boton_creacion" class="btn btn-primary" type="submit">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>
