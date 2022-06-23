@@ -11,7 +11,7 @@
             <br>
             <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control">{{producto.costo}}</span></label>
             <br>
-            {%if request.user.is_staff%}<i class="fa-solid fa-cart-shopping"  onclick="agregarAlCarrito('{{producto.id}}')"></i>{%endif%}
+            {%if request.user.is_authenticated%}<i class="fa-solid fa-cart-shopping" onclick="agregarAlCarrito('{{producto.id}}')"></i>{%endif%}
             {% if user.is_superuser %}
             <button type="button" class="btn btn-primary" onclick="abrirModalEdicion('{% url 'productos:editar_productos' producto.id%}')"> EDITAR </button>
             <a class="btn btn-danger" href="{%url 'productos:eliminar_productos' producto.id%}"> ELIMINAR </a>
@@ -25,10 +25,7 @@
 
     </div>
         <script>
-
             function agregarAlCarrito(id){
-	            console.log('{{user.id}}')
-                console.log(id)
 	            $.ajax({
 		            url:'/agregar_carrito/',
 		            method:'POST',

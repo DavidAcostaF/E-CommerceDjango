@@ -126,7 +126,7 @@ class ListarCarrito(View):
         for item in carrito:
             models.DetalleVenta.objects.create(venta = venta,producto=item.producto,cantidad=item.cantidad)
         carrito.delete()
-        return redirect('/')
+        return redirect('index')
     """
     un boton que al darle click consulte todo lo del carrito, despues crea instancia de la venta y las instancias DellateVenta y despues borra lo del carrito
     http://127.0.0.1:8000/listar_carrito/

@@ -17,8 +17,44 @@
         {%endfor %}
 </div>
 {%endblock body%}
+
+
 {%block comprar%}
+{%if context%}
     <li class="menu-item-has-children dropdown">
-    	<a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="/comprar_productos/" onclick="confirmacionCompra()"><i class="menu-icon fa fa-solid fa-check"></i></i>Comprar</a>
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="confirmacionCompra()"><i class="menu-icon fa fa-solid fa-check"></i></i>Comprar</a>
     </li>
-{%endblock comprar%}
+{%endif%}
+
+{%endblock comprar%}    
+    {%block extrajs%}
+<script>
+        function confirmacionCompra(){
+        Swal.fire({
+		title: '¿Deseas comprarlo?',
+		text: "No puedes revertir la compra",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Si, comprarlo!'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				url:"/comprar_productos/",
+				success:function(){
+					window.location.replace("/");
+				}
+			})
+		Swal.fire(
+			'Confirmado!',
+			'Se he comprado correctamente.',
+			'success'
+            )
+	}
+	})
+        }
+</script>
+    {%endblock extrajs%}
+
+
