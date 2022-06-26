@@ -6,7 +6,7 @@ class CrearProducto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField('Nombre del Producto',max_length=100,blank=False,null=False)
     descripcion = models.TextField('Descripcion',max_length=200,blank=False,null=False)
-    costo = models.CharField('Costo',max_length=50,blank=False,null=False)
+    costo = models.IntegerField('Costo',blank=False,null=False)
     imagen = models.ImageField('Imagen',upload_to ='media')
     estado = models.BooleanField('Estado',default=True)
     fecha_registro = models.DateField('Fecha de registro',auto_now=True,auto_now_add=False)
@@ -25,7 +25,10 @@ class Carrito(models.Model):
     usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=1)
     
-    
+    def precio_producto(self):
+        return self.producto.costo*self.cantidad
+
+        
 class Venta(models.Model):
     usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE)
     fecha_venta = models.DateField(auto_now=False,auto_now_add=True)
@@ -35,6 +38,8 @@ class DetalleVenta(models.Model):
     producto = models.ForeignKey(CrearProducto,on_delete=models.CASCADE)
     venta = models.ForeignKey(Venta,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    #total = models.IntegerField(default=precio_producto)
 
     def precio_producto(self):
         return self.producto.costo*self.cantidad
+

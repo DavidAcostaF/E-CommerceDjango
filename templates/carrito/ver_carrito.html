@@ -3,16 +3,26 @@
 {%block body%}
 <div class="row row-cols-auto" id="productos_columna">
         {%for carrito in context%}
-                <section class="col m-2 carrito">
+                <section class="col m-2 carrito ">
                         <img class="img-fluid rounded mx-auto" style="width:200px; height:200px;" src="{{carrito.producto.imagen.url}}">
                         <br>
-                        <label class="form-label">PRODUCTO<span style="width:200px; min-height:60px" class="form-control producto">{{carrito.producto}}</span></label>
+                        <label class="form-label">PRODUCTO<span style="width:200px; min-height:50px" class="form-control producto">{{carrito.producto}}</span></label>
                         <br>
                         <label class="form-label">DESCRIPCION<span class="form-control" style="width:200px; min-height:200px; min-lenght:300px">{{carrito.producto.descripcion}}</span></label>
                         <br>
-                        <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control" id="{{carrito.producto.id}}">{{carrito.producto.costo}}</span></label>
+                        <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control costo_{{carrito.cantidad}}" id="{{carrito.producto.id}}">{{carrito.producto.costo}}</span></label>
                         <br>
-                        <label class="form-label">Cantidad<span class="form-control  cantidad">{{carrito.cantidad}}</span></label>
+							<label class="form-label">Cantidad<br>
+								<input type="number" value="{{carrito.cantidad}}" class="quantity" min="1" id="cantidad_{{carrito.cantidad}}" onchange="actualizarPrecio('{{carrito.id}}','{{carrito.cantidad}}','{{carrito.cantidad}}','{{carrito.precio_producto}}')" onload="actualizarPrecio()">
+							</label>
+                        <label class="form-label" style="margin-left:15%">
+                            Total<span class="form-control total_{{carrito.precio_producto}} ">{{carrito.precio_producto}}</span>
+                        </label>
+                        <br>
+                            {%csrf_token%}
+                            <button type="button" class="btn btn-danger" onclick="eliminarDelCarrito({{carrito.id}})">
+                                Eliminar 
+                            </button>
                 </section>
         {%endfor %}
 </div>
@@ -29,6 +39,48 @@
 {%endblock comprar%}    
     {%block extrajs%}
 <script>
+        const actualizarPrecio = (producto,cantidad,costo,total) => {
+            let producto_id = document.getElementById(`precio_${producto}`)
+
+            let cantidades = document.getElementById(`cantidad_${cantidad}`).value
+                $.ajax({
+                    method:"post",
+                    data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(),"cantidades":cantidades,"productos":producto}
+                })
+            costos = document.querySelector(`.costo_${costo}`).textContent
+            document.querySelector(`.total_${total}`).innerHTML = costos*cantidades
+        }
+
+
+        function eliminarDelCarrito (id){
+        Swal.fire({
+		title: '¿Deseas borrar del carrito?',
+		text: "No puedes revertirlo",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Borrarlo!'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+                url:'/cantidad/',
+                method:'post',
+                data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(),'id':id},
+				success:function(success){
+					window.location.replace("/carrito/");
+                    console.log(success)
+				}
+			})
+		Swal.fire(
+			'Confirmado!',
+			'Se he borrado correctamente.',
+			'success'
+            )
+	}
+	})
+        }
+
         function confirmacionCompra(){
         Swal.fire({
 		title: '¿Deseas comprarlo?',

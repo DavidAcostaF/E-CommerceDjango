@@ -28,23 +28,11 @@ class ListarProductos(ListView):
         return self.model.objects.filter(estado = True)    
 
 
-    #HACER ESTO r.article_set.count()
-    # 2
-    # def get(self,request):
-    #     print(serializers.serialize('json',self.get_queryset()),'application/json')
-    #     if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Se encuentra en la documentación de Django 4.0
-    #         print(serializers.serialize('json',self.get_queryset()),'application/json')
-    #         return HttpResponse(serializers.serialize('json',self.get_queryset()),'application/json')
-    #     else:
-    #         return redirect('/')
-
 class EliminarProductos(DeleteView):
     model = models.CrearProducto
     template_name = 'productos/eliminar_producto.html'
     success_url = reverse_lazy('index')
 
-    # def get(self,request,pk):
-    #     return print(self.model.objects.filter(id = pk))
 
     def post(self,request,pk,*args, **kwargs):
         producto = self.model.objects.get(id = pk)
@@ -63,8 +51,6 @@ class EditarProducto(UpdateView):
         context['producto'] = self.model.objects.filter(estado = True)
         return context
 
-    # def get_success_url(self):
-    #     return redirect(self.success_url)
 
 
 #CARRITO
@@ -74,26 +60,24 @@ class Carrito(CreateView):
     form_class = forms.FormularioCarrito
     template_name = 'carrito/agregar_carrito.html'
     success_url = reverse_lazy('index')
+
 #Agregar producto al carrito
     def post(self, request):
         user_id = request.POST.get('user')
         producto_id = request.POST.get('producto')
         user = Usuario.objects.get(id=user_id)
-        print(user_id,producto_id)
         producto = models.CrearProducto.objects.get(id=producto_id)
         carrito, created = models.Carrito.objects.get_or_create(usuario=user, producto=producto)
         if not created:
             carrito.cantidad += 1
             carrito.save()
-
-        print(carrito)
         return HttpResponse(status=200)
 
         # vista = Vista(
         #     algo='algo'
         # )
 
-class VerCarrito(ListView):
+class VerCarrito(View):
     model = models.Carrito
     template_name = 'carrito/ver_carrito.html'
     context_object_name = 'carrito'
@@ -103,22 +87,25 @@ class VerCarrito(ListView):
 
     def get(self,request):
             return render(request,self.template_name,{'context':self.get_queryset(request.user.id)})
-
-        # if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Se encuentra en la documentación de Django 4.0
-        #     return render(request,self.template_name,{'context':self.get_queryset(request.user.id)})
-        #     return HttpResponse(serializers.serialize('json',self.get_queryset(request.user.id)),'application/json')
-
+    
     def post(self,request):
+        print(request.POST.get('id'))
         producto = request.POST.get('producto')
         cantidad = request.POST.get('cantidad')
-        producto = models.CrearProducto.objects.get(id = producto)
-        models.DetalleVenta.objects.create(producto = producto,cantidad = cantidad)
-        return render(request,self.template_name,{'context':self.get_queryset(request.user.id)})
-        
-        # models.CrearProducto.objects.create()
+        if producto and cantidad:
+            producto = models.CrearProducto.objects.get(id = producto)
+            models.DetalleVenta.objects.create(producto = producto,cantidad = cantidad)
+            return render(request,self.template_name,{'context':self.get_queryset(request.user.id)})
+        else:
+            cantidades = request.POST.get('cantidades')
+            productos = request.POST.get('productos')
+            carrito = models.Carrito.objects.get(id = productos)
+            carrito.cantidad = cantidades
+            carrito.save()
 
 
-class ListarCarrito(View):
+
+class ComprarCarrito(View):
     def get(self,request):
         carrito = models.Carrito.objects.filter(usuario = request.user)
         user = Usuario.objects.get(id=request.user.id)
@@ -127,8 +114,22 @@ class ListarCarrito(View):
             models.DetalleVenta.objects.create(venta = venta,producto=item.producto,cantidad=item.cantidad)
         carrito.delete()
         return redirect('index')
-    """
-    un boton que al darle click consulte todo lo del carrito, despues crea instancia de la venta y las instancias DellateVenta y despues borra lo del carrito
-    http://127.0.0.1:8000/listar_carrito/
-    """
+
     
+
+class HistorialCompras(View):
+    model = models.DetalleVenta
+    template_view = 'productos/historial_compras.html'
+
+    def get(self,request):
+        detalleventa = models.DetalleVenta.objects.filter(venta__usuario=request.user)
+        return render(request,'productos/historial_compras.html',{'detalleventa':detalleventa})
+
+class Cantidad(DeleteView):
+
+    def post(self,request):
+        req = request.POST.get('id')
+        print(req)
+        borrar = models.Carrito.objects.filter(id = req)
+        borrar.delete()
+        return redirect('carrito')

@@ -3488,3 +3488,13 @@ footer.site-footer .footer-inner a {
 	height: 300;
 	width: 250px;
 }
+
+.quantity{
+    width: 60px;
+    height: 42px;
+    /* line-height: 1.65; */
+    /* float: left;
+    padding: 0;
+    margin: 0;
+    border: 2px solid #eee; */
+}

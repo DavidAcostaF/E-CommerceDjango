@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block body %}
+<h2>Productos Comprados</h2>
+<div class="row row-cols-auto" id="productos_columna"> 
+    {% for producto in detalleventa %}
+   
+        <section class="col m-2 carrito">
+            <img class="img-fluid rounded mx-auto" style="width:200px; height:200px;" src="{% if producto.producto %} {{producto.producto.imagen}} {% else %} https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?cs=srgb&dl=pexels-math-90946.jpg&fm=jpg {%endif%}">
+            <br>
+            <label class="form-label">PRODUCTO<span style="width:200px; min-height:50px" class="form-control">{{producto.producto}}</span></label>
+            <br>
+            <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control">{{producto.producto.costo}}</span></label>
+            <br>
+            <label class="form-label">Cantidad<span class="form-control">{{producto.cantidad}}</span></label>
+            <label class="form-label"style="margin-left: 33%;">Total<span class="form-control">{{producto.precio_producto}}</span></label>
+        </section>
+            {% endfor %}
+            {% endblock body %}
+
