@@ -38,6 +38,7 @@ class DetalleVenta(models.Model):
     producto = models.ForeignKey(CrearProducto,on_delete=models.CASCADE)
     venta = models.ForeignKey(Venta,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    estado = models.BooleanField('Estado',default=True)
     #total = models.IntegerField(default=precio_producto)
 
     def precio_producto(self):

@@ -6,17 +6,17 @@
                 <section class="col m-2 carrito ">
                         <img class="img-fluid rounded mx-auto" style="width:200px; height:200px;" src="{{carrito.producto.imagen.url}}">
                         <br>
-                        <label class="form-label">PRODUCTO<span style="width:200px; min-height:50px" class="form-control producto">{{carrito.producto}}</span></label>
+                        <label class="form-label">PRODUCTO<span style="width:200px; min-height:50px" class="form-control producto" id="producto_{{carrito.id}}">{{carrito.producto}}</span></label>
                         <br>
                         <label class="form-label">DESCRIPCION<span class="form-control" style="width:200px; min-height:200px; min-lenght:300px">{{carrito.producto.descripcion}}</span></label>
                         <br>
-                        <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control costo_{{carrito.cantidad}}" id="{{carrito.producto.id}}">{{carrito.producto.costo}}</span></label>
+                        <label class="form-label">COSTO<span style="width:200px; height:auto" class="form-control "id="costo_{{carrito.producto.costo}}">{{carrito.producto.costo}}</span></label>
                         <br>
 							<label class="form-label">Cantidad<br>
-								<input type="number" value="{{carrito.cantidad}}" class="quantity" min="1" id="cantidad_{{carrito.cantidad}}" onchange="actualizarPrecio('{{carrito.id}}','{{carrito.cantidad}}','{{carrito.cantidad}}','{{carrito.precio_producto}}')" onload="actualizarPrecio()">
+								<input type="number" value="{{carrito.cantidad}}" class="quantity" min="1" id="cantidad_{{carrito.cantidad}}" onchange="actualizarPrecio({{carrito.id}},this.value,{{carrito.producto.costo}},{{carrito.precio_producto}})">
 							</label>
                         <label class="form-label" style="margin-left:15%">
-                            Total<span class="form-control total_{{carrito.precio_producto}} ">{{carrito.precio_producto}}</span>
+                            Total<span class="form-control " id="total_{{carrito.precio_producto}}">{{carrito.precio_producto}}</span>
                         </label>
                         <br>
                             {%csrf_token%}
@@ -27,30 +27,26 @@
         {%endfor %}
 </div>
 {%endblock body%}
-
-
 {%block comprar%}
 {%if context%}
-    <li class="menu-item-has-children dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="confirmacionCompra()"><i class="menu-icon fa fa-solid fa-check"></i></i>Comprar</a>
-    </li>
+    <a class="fa fa-solid fa-check" onclick="confirmacionCompra()" style="position:relative; left:86%; width:120px; height:40px;  top:21px; position: absolute;" >Comprar</a>
 {%endif%}
 
 {%endblock comprar%}    
     {%block extrajs%}
 <script>
-        const actualizarPrecio = (producto,cantidad,costo,total) => {
-            let producto_id = document.getElementById(`precio_${producto}`)
-
-            let cantidades = document.getElementById(`cantidad_${cantidad}`).value
-                $.ajax({
+        function actualizarPrecio(productos,cantidad,costo,total){
+            //let producto_id = document.getElementById(`producto_${producto}`)
+            //let cantidades = Number(document.getElementById(`cantidad_${cantidad}`).value)
+            //console.log(cantidades)
+                    $.ajax({
+                    url:'/cantidad/',
                     method:"post",
-                    data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(),"cantidades":cantidades,"productos":producto}
-                })
-            costos = document.querySelector(`.costo_${costo}`).textContent
-            document.querySelector(`.total_${total}`).innerHTML = costos*cantidades
+                    data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(),"cantidades":cantidad,"productos":productos}
+            })
+            costos = document.getElementById(`costo_${costo}`).textContent
+            document.getElementById(`total_${total}`).innerHTML = costos*cantidad
         }
-
 
         function eliminarDelCarrito (id){
         Swal.fire({
@@ -64,7 +60,7 @@
 	}).then((result) => {
 		if (result.isConfirmed) {
 			$.ajax({
-                url:'/cantidad/',
+                url:'/carrito/',
                 method:'post',
                 data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(),'id':id},
 				success:function(success){
@@ -106,7 +102,10 @@
 	}
 	})
         }
+
+
+
 </script>
     {%endblock extrajs%}
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>

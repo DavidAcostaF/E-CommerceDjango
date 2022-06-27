@@ -1,6 +1,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">{% csrf_token %}
-<div class="row row-cols-auto" id="productos_columna"> 
+<div class="row row-cols-auto" id="produrctos_columna"> 
     {% for producto in productos %}
         <section class="col m-2 carrito">
             <img class="img-fluid rounded mx-auto" style="width:200px; height:200px;" src="{% if producto.imagen %} {{producto.imagen.url}} {% else %} https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?cs=srgb&dl=pexels-math-90946.jpg&fm=jpg {%endif%}">
@@ -16,9 +16,7 @@
             <br>
             {%if request.user.is_authenticated%}<button type="button "style="color: green" 
                 class="btn btn-default btn-sm fa-cart-shoppin" onclick="agregarAlCarrito('{{producto.id}}')">
-                    <span class="glyphicon glyphicon-shopping-cart">
-                    </span>
-                <b> Añadir al carrito </b>
+                <b style="font-size:17px"> Añadir al Carrito </b>
             </button>
             {%endif%}
             <br>
@@ -28,7 +26,6 @@
             <a class="btn btn-danger" href="{%url 'productos:eliminar_productos' producto.id%}"> ELIMINAR </a>
             {% endif %}
         </section>
-
     {% endfor %}
 
 </div>
@@ -41,8 +38,16 @@
 	            $.ajax({
 		            url:'/agregar_carrito/',
 		            method:'POST',
-                    data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(), 'user':'{{user.id}}','producto':id}
+                    data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(), 'user':'{{user.id}}','producto':id},
+                    beforeSend:function(){
+                        Swal.fire({
+                            position: 'bottom-end',
+                            icon: 'success',
+                            title: 'Se ha añadido',
+                            showConfirmButton: false,
+                            timer: 700
+                        })
+                    }
 	            })
             }
-
 </script>

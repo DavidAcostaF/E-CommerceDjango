@@ -13,5 +13,6 @@ urlpatterns = [
     path('carrito/',login_required(views.VerCarrito.as_view()),name = 'carrito'),
     path('comprar_productos/',login_required(views.ComprarCarrito.as_view()),name = 'comprar_productos'),
     path('historial_compras/',login_required(views.HistorialCompras.as_view()),name = 'historial_compras'),
-    path('cantidad/',login_required(views.Cantidad.as_view()),name = 'cantidad')
+    path('cantidad/',login_required(views.Cantidad.as_view()),name = 'cantidad'),
+    path('compras/',login_required(views.Compras.as_view()), name = 'compras')
 ]

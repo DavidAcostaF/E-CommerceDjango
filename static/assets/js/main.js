@@ -97,21 +97,6 @@ function cerrar_modal_edicion(){
 }
 
 
-function notificacionError(mensaje){
-	Swal.fire({
-		title: 'Error!',
-		text:mensaje,
-		icon:'error'
-	})
-}
-
-function notificacionSuccess(mensaje){
-	Swal.fire({
-		title: 'Buen Trabajo!',
-		text:mensaje,
-		icon:'success'
-	})
-}
 
 
 

@@ -89,7 +89,6 @@ class VerCarrito(View):
             return render(request,self.template_name,{'context':self.get_queryset(request.user.id)})
     
     def post(self,request):
-        print(request.POST.get('id'))
         producto = request.POST.get('producto')
         cantidad = request.POST.get('cantidad')
         if producto and cantidad:
@@ -97,12 +96,11 @@ class VerCarrito(View):
             models.DetalleVenta.objects.create(producto = producto,cantidad = cantidad)
             return render(request,self.template_name,{'context':self.get_queryset(request.user.id)})
         else:
-            cantidades = request.POST.get('cantidades')
-            productos = request.POST.get('productos')
-            carrito = models.Carrito.objects.get(id = productos)
-            carrito.cantidad = cantidades
-            carrito.save()
-
+            req = request.POST.get('id')
+            print(req)
+            borrar = models.Carrito.objects.filter(id = req)
+            borrar.delete()
+            return redirect('productos:carrito')
 
 
 class ComprarCarrito(View):
@@ -125,11 +123,21 @@ class HistorialCompras(View):
         detalleventa = models.DetalleVenta.objects.filter(venta__usuario=request.user)
         return render(request,'productos/historial_compras.html',{'detalleventa':detalleventa})
 
-class Cantidad(DeleteView):
+class Cantidad(UpdateView):
 
     def post(self,request):
-        req = request.POST.get('id')
-        print(req)
-        borrar = models.Carrito.objects.filter(id = req)
-        borrar.delete()
-        return redirect('carrito')
+        cantidades = request.POST.get('cantidades')
+        productos = request.POST.get('productos')
+        carrito = models.Carrito.objects.get(id = productos)
+        carrito.cantidad = cantidades
+        carrito.save()
+        return redirect('productos:carrito')
+
+
+class Compras(ListView):
+    model = models.DetalleVenta
+    template_name = 'productos/compras.html'
+    context_object_name = 'compras'
+    
+    def get_queryset(self):
+        return self.model.objects.filter(estado = True)
