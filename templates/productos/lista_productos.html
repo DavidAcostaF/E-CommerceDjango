@@ -39,13 +39,22 @@
 		            url:'/agregar_carrito/',
 		            method:'POST',
                     data:{csrfmiddlewaretoken:$("[name = 'csrfmiddlewaretoken']").val(), 'user':'{{user.id}}','producto':id},
-                    beforeSend:function(){
+                    success:function(){
                         Swal.fire({
                             position: 'bottom-end',
                             icon: 'success',
                             title: 'Se ha añadido',
                             showConfirmButton: false,
                             timer: 700
+                        })
+                    },
+                    error:function(){
+                        Swal.fire({
+                            position: 'bottom-end',
+                            icon: 'error',
+                            title: 'No se ha añadido intentalo de nuevo',
+                            showConfirmButton: false,
+                            timer: 800
                         })
                     }
 	            })
