@@ -29,4 +29,4 @@ urlpatterns = [
     path('accounts/login/',Login.as_view(),name = 'login'),
     path('accounts/register',CrearUsuario.as_view(),name = 'register'),
     path('logout/',login_required(logoutUsuario),name = 'logout'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
